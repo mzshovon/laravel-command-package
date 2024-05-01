@@ -2,6 +2,7 @@
 
 namespace EasyRepo\Commands;
 
+use EasyRepo\Builder\RepoBuilder;
 use Illuminate\Console\Command;
 
 class GenerateRepo extends Command
@@ -28,10 +29,17 @@ class GenerateRepo extends Command
      */
     public function handle()
     {
-        $serviceClass = $this->ask('What is your repo name?', self::DEFAULT_CLASS_NAME);
-        $customMethods = $this->ask('Do you want to add custom methods(comma separated)?', self::CANCEL);
-        $repoForModel = $this->ask('Do you want to make repo for model?', self::CANCEL);
+        $serviceClass = $this->ask('What should the repo(s) be named?', self::DEFAULT_CLASS_NAME);
+        $customMethods = $this->ask('What should be your custom methods(comma separated)?', self::CANCEL);
+        $repoForModel = $this->ask('Do you want to make repo for model(Y/N)?', self::CANCEL);
         $doBind = $this->ask('Do you want to bind automatically?', self::CANCEL);
+
+        $builder = (new RepoBuilder())
+                    ->setClassName($serviceClass)
+                    ->setMethods($customMethods)
+                    ->setIsModel($repoForModel === self::ACCEPT)
+                    ->setDoBind($doBind === self::ACCEPT)
+                    ->generate();
 
         $this->warn("So you decide not to love our package!");
 

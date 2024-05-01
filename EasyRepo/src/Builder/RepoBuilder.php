@@ -70,6 +70,7 @@ class RepoBuilder {
 
     public function generate()
     {
+        dd($this->methods);
         return true;
     }
 
